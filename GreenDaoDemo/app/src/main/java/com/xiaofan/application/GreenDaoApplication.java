@@ -5,10 +5,10 @@ import android.text.TextUtils;
 
 import com.xiaofan.constant.CommonConstant;
 import com.xiaofan.constant.SqlConstant;
-import com.xiaofan.dao.GreenDaoContext;
 import com.xiaofan.db.GreenDaoSqliteOpenHelper;
 import com.xiaofan.greendao.DaoMaster;
 import com.xiaofan.greendao.DaoSession;
+import com.xiaofan.greendao.GreenDaoContext;
 import com.xiaofan.util.ExternalStorageUtil;
 
 /**
@@ -33,31 +33,11 @@ public class GreenDaoApplication extends Application {
         super.onCreate();
         instance = this;
     }
-
     /**
      * 获取应用实例
      */
     public static GreenDaoApplication getInstance() {
         return instance;
-    }
-
-
-    /**
-     * 获取DAO管理器
-     * @param partyId 当前用户的唯一标识
-     * @return
-     */
-    public static DaoMaster getDaoMaster(String partyId) {
-        if (!TextUtils.isEmpty(partyId)) {
-            // 数据库名称
-            String dbName = SqlConstant.SQLITE_FILE_NAME + "_" + partyId + SqlConstant.DB_EXTENSION_NAME;
-            helper = new GreenDaoSqliteOpenHelper(new GreenDaoContext(instance), dbName);
-            if (helper != null) {
-                daoMaster = new DaoMaster(helper.getWritableDatabase());
-            }
-        }
-
-        return daoMaster;
     }
 
     /**
@@ -71,8 +51,12 @@ public class GreenDaoApplication extends Application {
             String dbName = SqlConstant.SQLITE_FILE_NAME + "_" + partyId + SqlConstant.DB_EXTENSION_NAME;
             // 实例为空，或者数据库文件不存在，需要重新创建数据库
             if (daoMaster == null || !ExternalStorageUtil.exists(CommonConstant.DB_PATH + dbName) ) {
-                daoMaster = getDaoMaster(partyId);
+                helper = new GreenDaoSqliteOpenHelper(new GreenDaoContext(instance), dbName);
+                if (helper != null) {
+                    daoMaster = new DaoMaster(helper.getWritableDatabase());
+                }
             }
+
             if(daoMaster != null) {
                 daoSession = daoMaster.newSession();
             }

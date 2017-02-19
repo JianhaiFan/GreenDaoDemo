@@ -5,20 +5,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
-import com.xiaofan.bean.Customer;
-import com.xiaofan.bean.Order;
-import com.xiaofan.dao.CustomerUtil;
-import com.xiaofan.dao.OrderDaoUtil;
-import com.xiaofan.greendao.OrderDao;
-import com.xiaofan.greendao.PersonDao;
+import com.xiaofan.application.GreenDaoApplication;
+import com.xiaofan.bean.UserBean;
 import com.xiaofan.greendao.R;
+import com.xiaofan.greendao.UserBeanDao;
+import com.xiaofan.util.LogUtil;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.greenrobot.greendao.query.Query;
 
 public class MainActivity extends AppCompatActivity {
 
     private TextView tv_content;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,28 +28,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClick(View view) {
-        List<Customer> customers = new ArrayList<>();
-        customers.add(new Customer(10000L));
-        customers.add(new Customer(20000L));
-        CustomerUtil.insertPersons(customers);
+        // 查询实体
+        UserBeanDao userBeanDao = GreenDaoApplication.getDaoSession("1314520").getUserBeanDao();
+        UserBean userBean1 = new UserBean(10000L,"张三","23");
+        UserBean userBean2 = new UserBean(20000L,"张龙","26");
+        userBeanDao.insertOrReplaceInTx(userBean1);
+        userBeanDao.insertOrReplaceInTx(userBean2);
 
-        CustomerUtil.show(customers);
+//        UserBean userBean = userBeanDao.queryBuilder().where(UserBeanDao.Properties.UserName.eq("张三")).unique();
+//        LogUtil.e("userBean: " + userBean);
 
-        List<Order> orders = new ArrayList<>();
-        orders.add(new Order(1L,10000));
-        orders.add(new Order(2L,20000));
-        OrderDaoUtil.insertPersons(orders);
+        Query<UserBean> query = userBeanDao.queryBuilder().where(UserBeanDao.Properties.UserName.eq("张龙")).build();
+        query.setParameter(0,"张三");
+        // 多线程是必须加此方法
+//        query.forCurrentThread();
+        UserBean userBean = query.unique();
+        // 轻吹缓存
+//        userBeanDao.detachAll();
 
-        List<Order> os = OrderDaoUtil.queryOrders(null,null);
-        Order order = os.get(0);
-        order.setCustomer(new Customer(30000L));
-        OrderDaoUtil.show(os);
-
-
-
-
-
-
+//        userBean = userBeanDao.queryBuilder().where(UserBeanDao.Properties.UserName.eq("张三")).unique();
+        LogUtil.e("userBean: " + userBean);
 
     }
 

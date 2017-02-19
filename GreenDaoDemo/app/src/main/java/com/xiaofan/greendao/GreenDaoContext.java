@@ -1,4 +1,4 @@
-package com.xiaofan.dao;
+package com.xiaofan.greendao;
 
 import android.content.Context;
 import android.content.ContextWrapper;

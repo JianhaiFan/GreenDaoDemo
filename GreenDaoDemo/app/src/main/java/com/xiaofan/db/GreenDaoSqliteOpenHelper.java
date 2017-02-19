@@ -5,7 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.xiaofan.greendao.DaoMaster;
 import com.xiaofan.greendao.MigrationHelper;
-import com.xiaofan.greendao.PersonDao;
+import com.xiaofan.greendao.UserBeanDao;
 import com.xiaofan.util.LogUtil;
 
 
@@ -32,7 +32,7 @@ public class GreenDaoSqliteOpenHelper extends DaoMaster.OpenHelper  {
         if (newVersion > oldVersion) {
             LogUtil.e("数据库升级了...");
             //数据迁移模块
-            MigrationHelper.migrate(db, PersonDao.class);
+            MigrationHelper.migrate(db,UserBeanDao.class);
         }
 
     }
