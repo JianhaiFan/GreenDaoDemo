@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
         userBeanDao.insertOrReplaceInTx(userBean1);
         userBeanDao.insertOrReplaceInTx(userBean2);
 
+
 //        UserBean userBean = userBeanDao.queryBuilder().where(UserBeanDao.Properties.UserName.eq("张三")).unique();
 //        LogUtil.e("userBean: " + userBean);
 
